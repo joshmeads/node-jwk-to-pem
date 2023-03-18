@@ -91,21 +91,22 @@ function okpJwkToBuffer(jwk, opts) {
 		key.priv = b64ToBn(jwk.d, true);
 	}
 
-	key = curve.keyPair(key);
+	const pubKey = curve.keyFromPublic(key);
+	const privKey = curve.keyFromPrivate(key);
 
 	var keyValidation = key.validate();
 	if (!keyValidation.result) {
 		throw new Error('Invalid key for curve: "' + keyValidation.reason + '"');
 	}
 
-	var result = keyToPem(jwk.crv, key, opts);
+	var result = keyToPem(jwk.crv, pubKey, privKey, opts);
 
 	return result;
 }
 
-function keyToPem(crv, key, opts) {
+function keyToPem(crv, pubKey, privKey, opts) {
 	var compact = false;
-	var publicKey = key.getPublic(compact, 'hex');
+	var publicKey = pubKey.getPublic(compact, 'hex');
 	publicKey = Buffer.from(publicKey, 'hex');
 	publicKey = {
 		unused: 0,
@@ -114,7 +115,7 @@ function keyToPem(crv, key, opts) {
 
 	var result;
 	if (opts.private) {
-		var privateKey = key.getPrivate('hex');
+		var privateKey = privKey.getPrivate('hex');
 		privateKey = Buffer.from(privateKey, 'hex');
 
 		result = PrivateKeyInfo.encode({
