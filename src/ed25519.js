@@ -82,6 +82,7 @@ function okpJwkToBuffer(jwk, opts) {
 	console.log("jwk", jwk);
 
 	var hasPub = jwk.x && jwk.y;
+	console.log("hasPub", hasPub, jwk.x, jwk.y);
 	if (hasPub) {
 		key.pub = {
 			x: b64ToBn(jwk.x, false),
