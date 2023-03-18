@@ -92,7 +92,7 @@ function okpJwkToBuffer(jwk, opts) {
 	}
 
 	const pubKey = curve.keyFromPublic(key);
-	const privKey = curve.keyFromPrivate(key);
+	const privKey = curve.keyFromSecret(key);
 
 	var keyValidation = key.validate();
 	if (!keyValidation.result) {
