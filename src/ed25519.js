@@ -2,7 +2,7 @@
 
 var asn1 = require('asn1.js'),
 	Buffer = require('safe-buffer').Buffer,
-	ED25519 = require('elliptic').ed25519;
+	EDDSA = require('elliptic').eddsa;
 
 var b64ToBn = require('./b64-to-bn');
 
@@ -75,7 +75,7 @@ function okpJwkToBuffer(jwk, opts) {
 		throw new Error('Unsupported curve "' + jwk.crv + '"');
 	}
 
-	var curve = new ED25519(curveName);
+	var curve = new EDDSA(curveName);
 
 	var key = {};
 
