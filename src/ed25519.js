@@ -79,6 +79,8 @@ function okpJwkToBuffer(jwk, opts) {
 
 	var key = {};
 
+	console.log("jwk", jwk);
+
 	var hasPub = jwk.x && jwk.y;
 	if (hasPub) {
 		key.pub = {
@@ -93,11 +95,6 @@ function okpJwkToBuffer(jwk, opts) {
 
 	const pubKey = curve.keyFromPublic(key);
 	const privKey = curve.keyFromSecret(key);
-
-	var keyValidation = key.validate();
-	if (!keyValidation.result) {
-		throw new Error('Invalid key for curve: "' + keyValidation.reason + '"');
-	}
 
 	var result = keyToPem(jwk.crv, pubKey, privKey, opts);
 
