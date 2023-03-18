@@ -1,7 +1,8 @@
 'use strict';
 
-var ec = require('./ec'),
-	rsa = require('./rsa');
+const ec = require('./ec');
+const rsa = require('./rsa');
+const ed25519 = require('./ed25519');
 
 /**
  *
@@ -10,7 +11,15 @@ var ec = require('./ec'),
  * @returns {string}
  */
 function jwkToBuffer(jwk, opts) {
-	if ('object' !== typeof jwk || null === jwk) {
+	let _jwk = jwk;
+	if (typeof jwk === 'string') {
+		try {
+			const parsed = JSON.parse(Buffer.from(jwk, 'base64').toString('ascii'));
+			_jwk = parsed;
+		} catch {}
+	}
+
+	if (typeof jwk !== 'object' || null === jwk) {
 		throw new TypeError('Expected "jwk" to be an Object');
 	}
 
@@ -28,6 +37,9 @@ function jwkToBuffer(jwk, opts) {
 		}
 		case 'RSA': {
 			return rsa(jwk, opts);
+		}
+		case 'OKP': {
+			return ed25519(jwk, opts);
 		}
 		default: {
 			throw new Error('Unsupported key type "' + kty + '"');
